@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+chan car, scheduled, task, release;
+
+int list = 0;
+int newtask = 0;</declaration>
+	<template>
+		<name>Sensor</name>
+		<declaration>clock a;</declaration>
+		<location id="id0" x="-195" y="-17">
+			<name x="-205" y="-51">Idle</name>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-297" y="-85">a &gt; 50</label>
+			<label kind="synchronisation" x="-297" y="-25">car!</label>
+			<label kind="assignment" x="-357" y="-59">a := 0, newtask++</label>
+			<nail x="-221" y="-42"/>
+			<nail x="-246" y="-42"/>
+			<nail x="-255" y="-25"/>
+			<nail x="-255" y="-8"/>
+			<nail x="-246" y="8"/>
+			<nail x="-221" y="8"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Controller</name>
+		<declaration>// Place local declarations here.
+clock t, z;
+</declaration>
+		<location id="id1" x="-8" y="-85">
+			<name x="-51" y="-170">ReleaseVehicle</name>
+		</location>
+		<location id="id2" x="-25" y="8">
+			<name x="-25" y="25">Schedule</name>
+		</location>
+		<location id="id3" x="-110" y="-51">
+			<name x="-195" y="-85">CreateNewTask</name>
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="42" y="-127">release!</label>
+			<nail x="-8" y="-119"/>
+			<nail x="8" y="-127"/>
+			<nail x="25" y="-119"/>
+			<nail x="25" y="-93"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-93" y="8">t&gt;2</label>
+			<label kind="synchronisation" x="-93" y="-17">task!</label>
+			<label kind="assignment" x="-153" y="25">newtask := 0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-8" y="-51">scheduled?</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-110" y="-119">newtask &gt; 0</label>
+			<label kind="synchronisation" x="-76" y="-93">car?</label>
+			<label kind="assignment" x="-59" y="-68">t:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Scheduler</name>
+		<declaration>clock y;</declaration>
+		<location id="id4" x="8" y="-51">
+			<name x="-2" y="-85">Idle</name>
+		</location>
+		<location id="id5" x="8" y="42">
+			<name x="-8" y="59">Active</name>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-68" y="-51">y&gt;3</label>
+			<label kind="synchronisation" x="-119" y="-17">scheduled!</label>
+			<label kind="assignment" x="-34" y="-17">list++</label>
+			<nail x="-42" y="17"/>
+			<nail x="-42" y="-25"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="68" y="-17">task?</label>
+			<label kind="assignment" x="68" y="-34">y := 0</label>
+			<nail x="59" y="-25"/>
+			<nail x="59" y="17"/>
+		</transition>
+	</template>
+	<template>
+		<name>ReleaseVehicle</name>
+		<declaration>clock x;
+int count;</declaration>
+		<location id="id6" x="-34" y="-102">
+			<name x="-44" y="-136">Idle</name>
+		</location>
+		<location id="id7" x="-34" y="-8">
+			<name x="-119" y="-17">ReleaseInit</name>
+		</location>
+		<location id="id8" x="-34" y="76">
+			<name x="-68" y="93">ReserveBlock</name>
+		</location>
+		<init ref="id6"/>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="guard" x="0" y="51">x &gt; 2</label>
+			<label kind="assignment" x="0" y="25">list--, count++</label>
+			<nail x="-8" y="51"/>
+			<nail x="-8" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-110" y="25">list &gt; 0</label>
+			<label kind="assignment" x="-102" y="42">x := 0</label>
+			<nail x="-59" y="17"/>
+			<nail x="-59" y="51"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="guard" x="0" y="-42">count == 4 || list == 0</label>
+			<label kind="synchronisation" x="0" y="-76">car?</label>
+			<label kind="assignment" x="0" y="-59">count := 0</label>
+			<nail x="-8" y="-34"/>
+			<nail x="-8" y="-76"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-144" y="-59">release?</label>
+			<nail x="-59" y="-76"/>
+			<nail x="-59" y="-34"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+// Process = Template();
+// List one or more processes to be composed into a system.
+system Sensor, Controller, Scheduler, ReleaseVehicle;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ReleaseVehicle.ReleaseInit</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>

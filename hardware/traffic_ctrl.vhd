@@ -128,7 +128,7 @@ architecture RTL of TrafficController is
         -- Reserve block depending on direction
         reserve_block : process(CLK_IN) is
             variable temp : std_logic_vector(BUF_SIZE-1 downto 0) := x"0000";
-            begin:
+            begin
                 if rising_edge(CLK_IN) then
                     if not next_release = x"0000" then
                         temp := next_release

@@ -58,7 +58,7 @@ architecture RTL of TrafficController is
 
 
         -- Check each input and decide which one to release
-        reserve_block : process(CLK_IN) is
+        to_release : process(CLK_IN) is
             variable to_release : std_logic_vector(BUF_SIZE-1 downto 0) := x"0000";
             variable task : boolean := False;
             

@@ -48,7 +48,7 @@ void setup() {
   
   xTaskCreate(
     RoadTask,           // Function that should be called
-    "LED functions",    // Name of the task (for debugging)
+    "Block Handler",    // Name of the task (for debugging)
     4000,               // Stack size (bytes)
     NULL,               // Parameter to pass
     1,                  // Task priority
